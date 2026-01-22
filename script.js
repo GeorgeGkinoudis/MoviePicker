@@ -1,5 +1,5 @@
-const API_KEY = '99c2ec9615e90b231ec070a0ea8bf5f6';
-const API_URL = 'https://api.themoviedb.org/3';
+// Point to your Vercel API
+const API_ENDPOINT = '/api/movies';
 
 let selectedMovies = [];
 let categoryCounts = {};
@@ -10,26 +10,34 @@ async function init() {
     await loadMovies();
 }
 
-// Fetch random movies from the API
+// Fetch random movies from your backend API
 async function loadMovies() {
     try {
-        // Get popular movies
-        const response = await fetch(
-            `${API_URL}/movie/popular?api_key=${API_KEY}&page=${Math.floor(Math.random() * 50) + 1}`
-        );
-        const data = await response.json();
-        const movies = data.results.filter(movie => movie.poster_path);
+        const pageNum = Math.floor(Math.random() * 50) + 1;
+        const response = await fetch(`${API_ENDPOINT}?page=${pageNum}`);
         
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (!data.success || data.movies.length < 2) {
+            console.error('Not enough movies available');
+            return;
+        }
+
         // Get two random movies
         currentMovies = [];
         for (let i = 0; i < 2; i++) {
-            const randomIndex = Math.floor(Math.random() * movies.length);
-            currentMovies.push(movies[randomIndex]);
+            const randomIndex = Math.floor(Math.random() * data.movies.length);
+            currentMovies.push(data.movies[randomIndex]);
         }
         
         displayMovies();
     } catch (error) {
         console.error('Error fetching movies:', error);
+        document.getElementById('poster1').alt = 'Failed to load movies. Check console.';
     }
 }
 
@@ -50,7 +58,6 @@ function displayMovies() {
 
 // Handle movie selection
 async function selectMovie(index, movie) {
-    // Add to selected movies
     selectedMovies.push(movie);
     
     // Get the first genre as the category
@@ -69,10 +76,8 @@ async function selectMovie(index, movie) {
     document.getElementById('counter').textContent = selectedMovies.length;
     
     if (selectedMovies.length === 5) {
-        // Trigger explosion and show result
         triggerExplosion();
     } else {
-        // Load new movies
         await loadMovies();
     }
 }
@@ -95,7 +100,7 @@ function addToBucket(movie) {
     bucket.appendChild(bucketItem);
 }
 
-// Map genre IDs to names (TMDB genre IDs)
+// Map genre IDs to names
 function getGenreName(genreId) {
     const genres = {
         28: 'Action',
@@ -121,13 +126,12 @@ function getGenreName(genreId) {
     return genres[genreId] || 'Unknown';
 }
 
-// Trigger bucket explosion and show result
+// Trigger bucket explosion
 function triggerExplosion() {
     const bucket = document.getElementById('bucket');
     bucket.classList.add('explosion');
     
     setTimeout(() => {
-        // Find the favorite category
         let favoriteCategory = 'Unknown';
         let maxCount = 0;
         
@@ -138,7 +142,6 @@ function triggerExplosion() {
             }
         }
         
-        // Show result modal
         showResultModal(favoriteCategory);
     }, 600);
 }
@@ -169,5 +172,4 @@ function showResultModal(category) {
     document.body.appendChild(modal);
 }
 
-// Start the app
 init();
