@@ -1,3 +1,5 @@
+- In progress <br>
+Creating a serverless backend for API
 - Description <br>
 
 Movie Preference Analyzer is a simple interactive web application that allows users to discover their favorite movie category based on their choices. <br>
