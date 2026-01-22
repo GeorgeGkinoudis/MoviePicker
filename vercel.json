@@ -1,6 +1,6 @@
 {
-"buildCommand": "echo 'Static only'",
-  "outputDirectory": "public",
+  "buildCommand": "echo 'Static only'",
+  "outputDirectory": ".",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x"
