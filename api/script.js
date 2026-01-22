@@ -8,7 +8,6 @@ export default async function handler(req, res) {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     );
 
-    // Handle preflight requests
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return;
@@ -18,10 +17,9 @@ export default async function handler(req, res) {
     const API_URL = 'https://api.themoviedb.org/3';
 
     try {
-        const { page = 1 } = req.query;
-
+        const pageNum = Math.floor(Math.random() * 50) + 1;
         const response = await fetch(
-            `${API_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
+            `${API_URL}/movie/popular?api_key=${API_KEY}&page=${pageNum}`
         );
 
         if (!response.ok) {
@@ -29,8 +27,6 @@ export default async function handler(req, res) {
         }
 
         const data = await response.json();
-        
-        // Filter movies with posters
         const movies = data.results.filter(movie => movie.poster_path);
 
         res.status(200).json({
