@@ -1,5 +1,5 @@
 // Point to your Vercel API
-const API_ENDPOINT = '/api/movies';
+const API_ENDPOINT = '/api/script';
 
 let selectedMovies = [];
 let categoryCounts = {};
