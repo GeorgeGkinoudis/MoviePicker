@@ -1,8 +1,8 @@
-- In progress <br>
-Creating a serverless backend for API
+- Choose Your Movie ! <br>
+
 - Description <br>
 
-Movie Preference Analyzer is a simple interactive web application that allows users to discover their favorite movie category based on their choices. <br>
+Movie Picker is a simple interactive web application that allows users to discover their favorite movie category based on their choices. <br>
 
 The user is presented with two columns of movies. From these, the user selects a total of five movies. Based on these selections, the system analyzes the choices and determines the user’s preferred movie category (for example: Action, Comedy, Drama, Horror, etc.). <br>
 
