@@ -14,12 +14,21 @@ export default async function handler(req, res) {
     }
 
     const API_KEY = process.env.TMDB_API_KEY;
+
+    if (!API_KEY) {
+        return res.status(500).json({
+            success: false,
+            error: 'TMDB_API_KEY environment variable is not set.'
+        });
+    }
+
     const API_URL = 'https://api.themoviedb.org/3';
 
     try {
-        const pageNum = Math.floor(Math.random() * 50) + 1;
+        const { page = 1 } = req.query;
+
         const response = await fetch(
-            `${API_URL}/movie/popular?api_key=${API_KEY}&page=${pageNum}`
+            `${API_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
         );
 
         if (!response.ok) {
@@ -27,11 +36,13 @@ export default async function handler(req, res) {
         }
 
         const data = await response.json();
+
+        // Only return movies that have a poster
         const movies = data.results.filter(movie => movie.poster_path);
 
         res.status(200).json({
             success: true,
-            movies: movies,
+            movies,
             totalPages: data.total_pages
         });
     } catch (error) {
